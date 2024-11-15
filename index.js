@@ -1,13 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const port = process.env.PORT || 3000;
+
 
 // MongoDB Connection
 const uri = "mongodb+srv://schema:DpuKr64sQcMZxd6Y@cluster0.zuvfpqu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -48,7 +49,48 @@ async function run() {
             }
         });
 
-        
+        app.get("/users", async (req, res) => {
+            try {
+                const users = await usersCollection.find().toArray();
+                res.status(200).json({
+                    status: "success",
+                    data: users,
+                    message: "All users retrieved successfully",
+                });
+            } catch (error) {
+                res.status(500).json({
+                    status: "fail",
+                    message: error.message,
+                });
+            }
+        });
+
+        app.get("/user/:id", async (req, res) => {
+            const id = req.params.id;
+            try {
+                const user = await usersCollection.findOne({ _id: new ObjectId(id) });
+                if (user) {
+                    res.status(200).json({
+                        status: "success",
+                        data: user,
+                        message: "User retrieved successfully",
+                    });
+                } else {
+                    res.status(404).json({
+                        status: "fail",
+                        message: "User not found",
+                    });
+                }
+            } catch (error) {
+                res.status(500).json({
+                    status: "error",
+                    message: "An error occurred while retrieving the user",
+                    error: error.message,
+                });
+            }
+        });
+
+
 
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
