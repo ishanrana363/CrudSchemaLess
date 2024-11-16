@@ -2,7 +2,9 @@ const express = require("express");
 const {
     createUser,
     loginUser,
-    userProfile, // Ensure this is defined in your controllers
+    userProfile, 
+    updateUserProfile,
+    
 } = require("../controllers/userController");
 const { isLogIn } = require("../middleware/authMiddleware");
 
@@ -21,6 +23,10 @@ function userRoutes(usersCollection) {
         isLogIn, // Middleware to verify if the user is logged in
         (req, res) => userProfile(req, res, usersCollection)
     );
+    router.put(
+        "/update-profile", isLogIn, // Middleware to verify
+        (req, res) => updateUserProfile(req, res, usersCollection)
+    )
 
     return router;
 }

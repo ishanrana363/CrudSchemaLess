@@ -135,4 +135,40 @@ const userProfile = async (req, res,userCollection) => {
     }
 };
 
-module.exports = { createUser,loginUser, userProfile };
+const updateUserProfile = async (req, res, userCollection) => {
+    let id = req.headers.id;
+    const userId = new ObjectId(id);
+    const { name, email } = req.body;
+    try {
+        let update = {
+            $set: {
+                name,
+                email
+            }
+        };
+        let filter = {
+            _id : userId,
+        }
+        let user = await userCollection.updateOne(filter, update);
+        console.log("user is",user);
+        if(!user){
+            return res.status(404).json({
+                status: "error",
+                message: "User not found",
+            });
+        }
+        return res.status(200).json({
+            status: "success",
+            data: user,
+            message: "User profile updated successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            message: "Failed to update user profile",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = { createUser,loginUser, userProfile,updateUserProfile };
