@@ -105,4 +105,34 @@ const loginUser = async (req, res, userCollection) => {
     }
 };
 
-module.exports = { createUser,loginUser };
+const userProfile = async (req, res,userCollection) => {
+    let id = req.headers.id;
+    const userId = new ObjectId(id);
+    try {
+        let filter = {
+            _id : userId,
+        }
+        let user = await userCollection.findOne(filter);
+        console.log("user is",user);
+        if(!user){
+            return res.status(404).json({
+                status: "error",
+                message: "User not found",
+            });
+        }
+        return res.status(200).json({
+            status: "success",
+            data: user,
+            message: "User profile fetched successfully",
+        });
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+        return res.status(500).json({
+            status: "error",
+            message: "Failed to fetch user profile",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = { createUser,loginUser, userProfile };
