@@ -4,6 +4,7 @@ const {
     loginUser,
     userProfile, 
     updateUserProfile,
+    allUsers,
     
 } = require("../controllers/userController");
 const { isLogIn } = require("../middleware/authMiddleware");
@@ -13,6 +14,7 @@ function userRoutes(usersCollection) {
 
     // Route to create a user
     router.post("/users", (req, res) => createUser(req, res, usersCollection));
+    router.get("/all-user", (req, res) => allUsers(req, res, usersCollection));
 
     // Route to log in a user
     router.post("/login", (req, res) => loginUser(req, res, usersCollection));

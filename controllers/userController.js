@@ -171,4 +171,21 @@ const updateUserProfile = async (req, res, userCollection) => {
     }
 };
 
-module.exports = { createUser,loginUser, userProfile,updateUserProfile };
+const allUsers = async (req,res,userCollection)=>{
+    try {
+        let users = await userCollection.find().toArray();
+        return res.status(200).json({
+            status: "success",
+            data: users,
+            message: "All users fetched successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            message: "Failed to fetch all users",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = { createUser,loginUser, userProfile,updateUserProfile,allUsers };
