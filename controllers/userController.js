@@ -188,4 +188,28 @@ const allUsers = async (req,res,userCollection)=>{
     }
 };
 
-module.exports = { createUser,loginUser, userProfile,updateUserProfile,allUsers };
+const deleteUser = async (req, res, userCollection)=>{
+    let id = req.params.id;
+    const userId = new ObjectId(id);
+    try {
+        let user = await userCollection.deleteOne({_id: userId});
+        if(!user){
+            return res.status(404).json({
+                status: "error",
+                message: "User not found",
+            });
+        }
+        return res.status(200).json({
+            status: "success",
+            message: "User deleted successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            message: "Failed to delete user",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = { createUser,loginUser, userProfile,updateUserProfile,allUsers,deleteUser };
